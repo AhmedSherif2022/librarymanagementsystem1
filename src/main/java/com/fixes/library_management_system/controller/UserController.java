@@ -28,7 +28,7 @@ public class UserController
         this.userService = userService;
     }
 
-    // ------------------------------------------------------------ public (no token)
+
 
     @PostMapping("/register")
     public ResponseEntity<RegisterResponse> register(@Valid @RequestBody SaveUserRequest request)
@@ -42,7 +42,7 @@ public class UserController
         return ResponseEntity.ok(userService.login(request));
     }
 
-    // ------------------------------------------------------------ my own account
+
 
     @GetMapping("/me")
     @PreAuthorize("hasAnyRole('USER','ADMIN')")
@@ -60,13 +60,13 @@ public class UserController
 
     @DeleteMapping("/me")
     @PreAuthorize("hasAnyRole('USER','ADMIN')")
-    @ResponseStatus(HttpStatus.NO_CONTENT)   // 204, no body
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteUserDetails()
     {
         userService.deleteUserDetails();
     }
 
-    // ------------------------------------------------------------ admin only
+
 
     @GetMapping
     @PreAuthorize("hasRole('ADMIN')")
@@ -92,13 +92,12 @@ public class UserController
 
     @DeleteMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
-    @ResponseStatus(HttpStatus.NO_CONTENT)   // 204, no body
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteUserDetails(@PathVariable Long id)
     {
         userService.deleteUserDetails(id);
     }
 
-    // Accepts roles from the request body, so it MUST stay admin only
     @PostMapping
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<UserDTO> addUser(@Valid @RequestBody AddUserRequest request)
