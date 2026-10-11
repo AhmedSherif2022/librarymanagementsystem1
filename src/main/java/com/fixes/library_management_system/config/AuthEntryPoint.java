@@ -1,7 +1,7 @@
 package com.fixes.library_management_system.config;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fixes.library_management_system.dto.Error.ErrorResponse;
-import com.fixes.library_management_system.util.enums.ErrorEnum;
+import com.fixes.library_management_system.Enums.ErrorEnum;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;

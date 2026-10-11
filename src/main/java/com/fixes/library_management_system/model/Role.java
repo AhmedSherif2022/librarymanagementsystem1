@@ -1,6 +1,6 @@
 package com.fixes.library_management_system.model;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fixes.library_management_system.util.enums.RoleEnum;
+import com.fixes.library_management_system.Enums.RoleEnum;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import java.util.HashSet;

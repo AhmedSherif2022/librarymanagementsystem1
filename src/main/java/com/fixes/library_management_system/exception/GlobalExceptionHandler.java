@@ -1,6 +1,6 @@
 package com.fixes.library_management_system.exception;
 import com.fixes.library_management_system.dto.Error.ErrorResponse;
-import com.fixes.library_management_system.util.enums.ErrorEnum;
+import com.fixes.library_management_system.Enums.ErrorEnum;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.dao.DataIntegrityViolationException;
