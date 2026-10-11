@@ -8,10 +8,10 @@ import com.fixes.library_management_system.exception.EntityNotFoundException;
 import com.fixes.library_management_system.mapper.BookMapper;
 import com.fixes.library_management_system.model.Author;
 import com.fixes.library_management_system.model.Book;
-import com.fixes.library_management_system.repository.Authorrepository;
-import com.fixes.library_management_system.repository.Bookrepository;
-import com.fixes.library_management_system.util.enums.EntityEnum;
-import com.fixes.library_management_system.util.enums.OperationEnum;
+import com.fixes.library_management_system.repository.AuthorRepository;
+import com.fixes.library_management_system.repository.BookRepository;
+import com.fixes.library_management_system.Enums.EntityEnum;
+import com.fixes.library_management_system.Enums.OperationEnum;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -20,13 +20,13 @@ import java.util.List;
 @Service
 public class BookService
 {
-    private final Bookrepository bookRepository;
-    private final Authorrepository authorRepository;
+    private final BookRepository bookRepository;
+    private final AuthorRepository authorRepository;
     private final BookMapper bookMapper;
     private final AuditlogService auditLogService;
 
-    public BookService(Bookrepository bookRepository,
-                       Authorrepository authorRepository,
+    public BookService(BookRepository bookRepository,
+                       AuthorRepository authorRepository,
                        BookMapper bookMapper,
                        AuditlogService auditLogService)
     {

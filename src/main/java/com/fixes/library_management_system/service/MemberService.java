@@ -6,10 +6,10 @@ import com.fixes.library_management_system.exception.EntityAlreadyExistingExcept
 import com.fixes.library_management_system.exception.EntityNotFoundException;
 import com.fixes.library_management_system.mapper.MemberMapper;
 import com.fixes.library_management_system.model.Member;
-import com.fixes.library_management_system.repository.Bookrepository;
-import com.fixes.library_management_system.repository.Memberrepository;
-import com.fixes.library_management_system.util.enums.EntityEnum;
-import com.fixes.library_management_system.util.enums.OperationEnum;
+import com.fixes.library_management_system.repository.BookRepository;
+import com.fixes.library_management_system.repository.MemberRepository;
+import com.fixes.library_management_system.Enums.EntityEnum;
+import com.fixes.library_management_system.Enums.OperationEnum;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
@@ -18,13 +18,13 @@ import java.util.Locale;
 @Service
 public class MemberService
 {
-    private final Memberrepository memberRepository;
-    private final Bookrepository bookRepository;
+    private final MemberRepository memberRepository;
+    private final BookRepository bookRepository;
     private final MemberMapper memberMapper;
     private final AuditlogService auditLogService;
 
-    public MemberService(Memberrepository memberRepository,
-                         Bookrepository bookRepository,
+    public MemberService(MemberRepository memberRepository,
+                         BookRepository bookRepository,
                          MemberMapper memberMapper,
                          AuditlogService auditLogService)
     {

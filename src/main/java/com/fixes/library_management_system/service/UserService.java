@@ -13,11 +13,11 @@ import com.fixes.library_management_system.exception.InvalidPasswordException;
 import com.fixes.library_management_system.mapper.UserMapper;
 import com.fixes.library_management_system.model.Role;
 import com.fixes.library_management_system.model.User;
-import com.fixes.library_management_system.repository.Rolerespository;
+import com.fixes.library_management_system.repository.RoleRepository;
 import com.fixes.library_management_system.repository.UserRepository;
-import com.fixes.library_management_system.util.enums.EntityEnum;
-import com.fixes.library_management_system.util.enums.OperationEnum;
-import com.fixes.library_management_system.util.enums.RoleEnum;
+import com.fixes.library_management_system.Enums.EntityEnum;
+import com.fixes.library_management_system.Enums.OperationEnum;
+import com.fixes.library_management_system.Enums.RoleEnum;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -36,14 +36,14 @@ public class UserService {
     private static final Logger log = LoggerFactory.getLogger(UserService.class);
     private final TokenService tokenService;
     private final UserRepository userRepository;
-    private final Rolerespository roleRepository;
+    private final RoleRepository roleRepository;
     private final PasswordEncoder passwordEncoder;
     private final UserMapper userMapper;
     private final AuditlogService auditLogService;
 
     public UserService(TokenService tokenService,
                        UserRepository userRepository,
-                       Rolerespository roleRepository,
+                       RoleRepository roleRepository,
                        PasswordEncoder passwordEncoder,
                        UserMapper userMapper,
                        AuditlogService auditLogService) {

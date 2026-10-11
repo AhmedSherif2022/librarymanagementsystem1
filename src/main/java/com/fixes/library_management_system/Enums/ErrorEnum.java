@@ -1,4 +1,4 @@
-package com.fixes.library_management_system.util.enums;
+package com.fixes.library_management_system.Enums;
 public enum ErrorEnum
 {
     INVALID_PASSWORD("ERR-001", "Invalid User Password"),
