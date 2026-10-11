@@ -78,8 +78,7 @@ public class SecurityConfiguration
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers("/users/register", "/users/login").permitAll()
                         .requestMatchers("/error").permitAll()
-                        // Optional while developing: open the Swagger pages (remove in production)
-                        // .requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll()
+                        .requestMatchers("/", "/index.html", "/css/**", "/js/**").permitAll()
                         .anyRequest().authenticated())
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
 
