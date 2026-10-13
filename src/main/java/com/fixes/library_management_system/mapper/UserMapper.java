@@ -11,6 +11,7 @@ public interface UserMapper
 {
     UserDTO toDTO(User user);
 
+
     default String roleToName(Role role)
     {
         return role == null || role.getName() == null ? null : role.getName().name();

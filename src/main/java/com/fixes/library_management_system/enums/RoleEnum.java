@@ -1,4 +1,4 @@
-package com.fixes.library_management_system.Enums;
+package com.fixes.library_management_system.enums;
 
 public enum RoleEnum
 {

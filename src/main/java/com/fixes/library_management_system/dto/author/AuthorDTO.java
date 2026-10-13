@@ -1,6 +1,13 @@
 package com.fixes.library_management_system.dto.author;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
 import java.time.LocalDate;
+@Setter
+@Getter
+@NoArgsConstructor
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class AuthorDTO {
@@ -10,8 +17,6 @@ public class AuthorDTO {
     private String biography;
     private LocalDate dob;
 
-    public AuthorDTO() {}
-
     public AuthorDTO(Long id, String name, String biography, LocalDate dob)
     {
         this.id = id;
@@ -20,42 +25,6 @@ public class AuthorDTO {
         this.dob = dob;
     }
 
-    public Long getId()
-    {
-        return id;
-    }
-    public void setId(Long id)
-    {
-        this.id = id;
-    }
-    public String getName()
-    {
-
-        return name;
-    }
-    public void setName(String name)
-    {
-
-        this.name = name;
-    }
-    public String getBiography()
-    {
-
-        return biography;
-    }
-    public void setBiography(String biography)
-    {
-        this.biography = biography;
-    }
-    public LocalDate getDob()
-    {
-
-        return dob;
-    }
-    public void setDob(LocalDate dob)
-    {
-        this.dob = dob;
-    }
 }
 
 

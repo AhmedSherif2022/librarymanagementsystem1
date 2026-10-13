@@ -12,19 +12,22 @@ import java.util.Optional;
 public interface BookRepository extends JpaRepository<Book, Long>
  {
 
-    // Duplicate checks
+
     boolean existsByIsbn(String isbn);                    // when creating a book
     boolean existsByIsbnAndIdNot(String isbn, Long id);   // when updating a book
 
-    // Delete checks (the cascades were removed from Author and Member)
+
     boolean existsByAuthorId(Long authorId);
     boolean existsByMemberId(Long memberId);
 
-    // Books currently held by a member
     List<Book> findByMemberId(Long memberId);
 
-    // Load author and member together with the book (avoids many extra queries,
-    // and avoids LazyInitializationException when mapping to a DTO)
+
+
+    @Override
+    @EntityGraph(attributePaths = {"author", "member"})
+    List<Book> findAll();
+
     @Override
     @EntityGraph(attributePaths = {"author", "member"})
     Page<Book> findAll(Pageable pageable);

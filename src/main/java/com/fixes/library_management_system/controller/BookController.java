@@ -22,8 +22,6 @@ public class BookController
     {
         this.bookService = bookService;
     }
-
-    // Any logged-in user (USER or ADMIN)
     @GetMapping
     @PreAuthorize("hasAnyRole('USER','ADMIN')")
     public ResponseEntity<ViewBookSResponse> viewBooks()
@@ -37,8 +35,6 @@ public class BookController
     {
         return ResponseEntity.ok(bookService.viewBookDetails(id));
     }
-
-    // Admin only
     @PostMapping
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<BookDTO> addBook(@Valid @RequestBody SaveBookRequest request)
@@ -50,7 +46,6 @@ public class BookController
                 .toUri();
         return ResponseEntity.created(location).body(created);   // 201 + Location header
     }
-
     @PutMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<BookDTO> updateBook(@PathVariable Long id,
@@ -58,12 +53,24 @@ public class BookController
     {
         return ResponseEntity.ok(bookService.updateBook(id, request));
     }
-
     @DeleteMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
-    @ResponseStatus(HttpStatus.NO_CONTENT)   // 204, no body
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteBook(@PathVariable Long id)
     {
         bookService.deleteBook(id);
+    }
+
+    @PostMapping("/{id}/borrow/{memberId}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<BookDTO> borrowBook(@PathVariable Long id, @PathVariable Long memberId)
+    {
+        return ResponseEntity.ok(bookService.borrowBook(id, memberId));
+    }
+    @PostMapping("/{id}/return")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<BookDTO> returnBook(@PathVariable Long id)
+    {
+        return ResponseEntity.ok(bookService.returnBook(id));
     }
 }

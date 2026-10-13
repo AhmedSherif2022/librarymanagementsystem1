@@ -2,6 +2,9 @@ package com.fixes.library_management_system.model;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -9,7 +12,10 @@ import java.util.List;
 
 @Entity
 @Table(name = "members")
-public class Member {
+@Setter
+@Getter
+@NoArgsConstructor
+public class Memeber {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -33,60 +39,9 @@ public class Member {
     @JsonIgnore
     private List<Book> borrowedBooks = new ArrayList<>();
 
-
-    public Member()
-    {
-
-
-    }
-    public Member(String name, String email, LocalDate membershipDate) {
+    public Memeber(String name, String email, LocalDate membershipDate) {
         this.name = name;
         this.email = email;
         this.membershipDate = membershipDate;
-    }
-
-
-    public Long getId()
-    {
-        return id;
-    }
-    public void setId(Long id)
-    {
-        this.id = id;
-    }
-
-    public String getName()
-    {
-        return name;
-    }
-    public void setName(String name)
-    {
-        this.name = name;
-    }
-
-    public String getEmail()
-    {
-        return email;
-    }
-    public void setEmail(String email)
-    {
-        this.email = email;
-    }
-
-    public LocalDate getMembershipDate()
-    {
-        return membershipDate;
-    }
-    public void setMembershipDate(LocalDate membershipDate)
-    {
-        this.membershipDate = membershipDate;
-    }
-    public List<Book> getBorrowedBooks()
-    {
-        return borrowedBooks;
-    }
-    public void setBorrowedBooks(List<Book> borrowedBooks)
-    {
-        this.borrowedBooks = borrowedBooks;
     }
 }

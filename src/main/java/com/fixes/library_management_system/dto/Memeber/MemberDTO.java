@@ -1,9 +1,15 @@
 package com.fixes.library_management_system.dto.Memeber;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-
+@NoArgsConstructor
+@Setter
+@Getter
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class MemberDTO
 {
@@ -14,7 +20,6 @@ public class MemberDTO
     private LocalDate membershipDate;
     private List<BorrowedBook> borrowedBooks = new ArrayList<>();
 
-    public MemberDTO() {}
 
     public MemberDTO(Long id, String name, String email, LocalDate membershipDate,
                      List<BorrowedBook> borrowedBooks)
@@ -25,48 +30,12 @@ public class MemberDTO
         this.membershipDate = membershipDate;
         this.borrowedBooks = borrowedBooks == null ? new ArrayList<>() : borrowedBooks;
     }
-    public Long getId()
-    {
-        return id;
-    }
-    public void setId(Long id)
-    {
-        this.id = id;
-    }
-    public String getName()
-    {
-        return name;
-    }
-    public void setName(String name)
-    {
-        this.name = name;
-    }
-    public String getEmail()
-    {
-        return email;
-    }
-    public void setEmail(String email)
-    {
-        this.email = email;
-    }
-    public LocalDate getMembershipDate()
-    {
-        return membershipDate;
-    }
-    public void setMembershipDate(LocalDate membershipDate)
-    {
-        this.membershipDate = membershipDate;
-    }
-    public List<BorrowedBook> getBorrowedBooks()
-    {
-        return borrowedBooks;
-    }
+
     public void setBorrowedBooks(List<BorrowedBook> borrowedBooks)
     {
         this.borrowedBooks = borrowedBooks == null ? new ArrayList<>() : borrowedBooks;
     }
 
-    // A small summary of a book: just three simple values, never the Book entity
     public static class BorrowedBook
     {
         private Long id;

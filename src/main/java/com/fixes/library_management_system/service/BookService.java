@@ -1,17 +1,19 @@
 package com.fixes.library_management_system.service;
-
 import com.fixes.library_management_system.dto.Book.BookDTO;
 import com.fixes.library_management_system.dto.Book.SaveBookRequest;
 import com.fixes.library_management_system.dto.Book.ViewBookSResponse;
+import com.fixes.library_management_system.exception.ConflictException;
 import com.fixes.library_management_system.exception.EntityAlreadyExistingException;
 import com.fixes.library_management_system.exception.EntityNotFoundException;
 import com.fixes.library_management_system.mapper.BookMapper;
 import com.fixes.library_management_system.model.Author;
 import com.fixes.library_management_system.model.Book;
+import com.fixes.library_management_system.model.Memeber;
 import com.fixes.library_management_system.repository.AuthorRepository;
 import com.fixes.library_management_system.repository.BookRepository;
-import com.fixes.library_management_system.Enums.EntityEnum;
-import com.fixes.library_management_system.Enums.OperationEnum;
+import com.fixes.library_management_system.enums.EntityEnum;
+import com.fixes.library_management_system.enums.OperationEnum;
+import com.fixes.library_management_system.repository.MemberRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,21 +24,23 @@ public class BookService
 {
     private final BookRepository bookRepository;
     private final AuthorRepository authorRepository;
+    private final MemberRepository memberRepository;
     private final BookMapper bookMapper;
     private final AuditlogService auditLogService;
 
     public BookService(BookRepository bookRepository,
                        AuthorRepository authorRepository,
+                       MemberRepository memberRepository,
                        BookMapper bookMapper,
                        AuditlogService auditLogService)
     {
         this.bookRepository = bookRepository;
         this.authorRepository = authorRepository;
+        this.memberRepository = memberRepository;
         this.bookMapper = bookMapper;
         this.auditLogService = auditLogService;
     }
 
-    // @Transactional is required: the mapper reads the lazy author and member
     @Transactional(readOnly = true)
     public ViewBookSResponse viewBooks()
     {
@@ -95,10 +99,43 @@ public class BookService
     {
         Book book = findBook(id);
         if (book.getMember() != null) {
-            throw new EntityAlreadyExistingException("Book is currently borrowed and cannot be deleted");
+            throw new ConflictException("Book is currently borrowed and cannot be deleted");   // 409
         }
         bookRepository.delete(book);
         auditLogService.auditLog(EntityEnum.BOOK, OperationEnum.DELETE, id);
+    }
+
+
+    @Transactional
+    public BookDTO borrowBook(Long bookId, Long memberId)
+    {
+        Book book = findBook(bookId);
+        Memeber member = findMember(memberId);
+
+        if (book.getMember() != null) {
+            throw new ConflictException("Book is already borrowed");   // 409
+        }
+        book.setMember(member);
+
+        Book saved = bookRepository.save(book);
+        auditLogService.auditLog(EntityEnum.BOOK, OperationEnum.UPDATE, saved.getId());
+        return bookMapper.toDTO(saved);
+    }
+
+
+    @Transactional
+    public BookDTO returnBook(Long bookId)
+    {
+        Book book = findBook(bookId);
+
+        if (book.getMember() == null) {
+            throw new ConflictException("Book is not borrowed");       // 409
+        }
+        book.setMember(null);
+
+        Book saved = bookRepository.save(book);
+        auditLogService.auditLog(EntityEnum.BOOK, OperationEnum.UPDATE, saved.getId());
+        return bookMapper.toDTO(saved);
     }
 
     private Book findBook(Long id)
@@ -111,5 +148,11 @@ public class BookService
     {
         return authorRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Author", id));
+    }
+
+    private Memeber findMember(Long id)
+    {
+        return memberRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Member", id));
     }
 }

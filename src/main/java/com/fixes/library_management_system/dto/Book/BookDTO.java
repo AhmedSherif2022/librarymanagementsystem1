@@ -1,7 +1,9 @@
 package com.fixes.library_management_system.dto.Book;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
+@NoArgsConstructor
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class BookDTO
@@ -18,7 +20,6 @@ public class BookDTO
     private Long memberId;      // null means the book is available
     private String memberName;
 
-    public BookDTO() {}
 
     public BookDTO(Long id, String title, String isbn, LocalDate publishedDate,
                    Long authorId, String authorName, Long memberId, String memberName)

@@ -2,14 +2,15 @@ package com.fixes.library_management_system.service;
 import com.fixes.library_management_system.dto.author.AuthorDTO;
 import com.fixes.library_management_system.dto.author.SaveAuthorRequest;
 import com.fixes.library_management_system.dto.author.ViewAuthorsResponse;
+import com.fixes.library_management_system.exception.ConflictException;
 import com.fixes.library_management_system.exception.EntityAlreadyExistingException;
 import com.fixes.library_management_system.exception.EntityNotFoundException;
 import com.fixes.library_management_system.mapper.AuthorMapper;
 import com.fixes.library_management_system.model.Author;
 import com.fixes.library_management_system.repository.AuthorRepository;
 import com.fixes.library_management_system.repository.BookRepository;
-import com.fixes.library_management_system.Enums.EntityEnum;
-import com.fixes.library_management_system.Enums.OperationEnum;
+import com.fixes.library_management_system.enums.EntityEnum;
+import com.fixes.library_management_system.enums.OperationEnum;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -70,7 +71,7 @@ public class AuthorService
     {
         Author author = findAuthor(id);
         if (bookRepository.existsByAuthorId(id)) {
-            throw new EntityAlreadyExistingException("Author still has books and cannot be deleted");
+            throw new ConflictException("Author still has books and cannot be deleted");
         }
         authorRepository.delete(author);
         auditLogService.auditLog(EntityEnum.AUTHOR, OperationEnum.DELETE, id);

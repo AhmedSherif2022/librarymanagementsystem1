@@ -1,6 +1,6 @@
 package com.fixes.library_management_system.exception;
 import com.fixes.library_management_system.dto.Error.ErrorResponse;
-import com.fixes.library_management_system.Enums.ErrorEnum;
+import com.fixes.library_management_system.enums.ErrorEnum;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -8,10 +8,12 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.security.access.AccessDeniedException;
+import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
+import org.springframework.web.servlet.resource.NoResourceFoundException;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -58,9 +60,6 @@ public class GlobalExceptionHandler
     {
         return build(HttpStatus.FORBIDDEN, ex);
     }
-
-
-
     @ExceptionHandler(AccessDeniedException.class)
     public ResponseEntity<ErrorResponse> handleAccessDenied(AccessDeniedException ex)
     {
@@ -102,8 +101,6 @@ public class GlobalExceptionHandler
                 .body(new ErrorResponse(ErrorEnum.ENTITY_EXISTING.code,
                         "The request conflicts with existing data"));
     }
-
-
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResponse> handleUnexpected(Exception ex)
     {
@@ -111,12 +108,27 @@ public class GlobalExceptionHandler
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR) // 500
                 .body(new ErrorResponse(SERVER_ERROR_CODE, "Unexpected server error"));
     }
-
-
-
     private ResponseEntity<ErrorResponse> build(HttpStatus status, AppException ex)
     {
         return ResponseEntity.status(status)
                 .body(new ErrorResponse(ex.getErrorCode(), ex.getErrorMessage()));
+    }
+    @ExceptionHandler(NoResourceFoundException.class)
+    public ResponseEntity<ErrorResponse> handleNoResource(NoResourceFoundException ex)
+    {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body(new ErrorResponse(ErrorEnum.ENTITY_NOT_FOUND.code, "Resource not found"));
+    }
+
+    @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
+    public ResponseEntity<ErrorResponse> handleMethodNotAllowed(HttpRequestMethodNotSupportedException ex)
+    {
+        return ResponseEntity.status(HttpStatus.METHOD_NOT_ALLOWED)
+                .body(new ErrorResponse(BAD_REQUEST_CODE, "Method not allowed"));
+    }
+    @ExceptionHandler(ConflictException.class)
+    public ResponseEntity<ErrorResponse> handleConflict(ConflictException ex)
+    {
+        return build(HttpStatus.CONFLICT, ex);
     }
 }

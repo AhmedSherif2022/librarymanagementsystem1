@@ -19,17 +19,14 @@ import java.util.List;
 
 public class JWTRequestFilter extends OncePerRequestFilter
 {
-
     private final TokenService tokenService;
+    private final ObjectMapper objectMapper;
 
-
-
-    public JWTRequestFilter(TokenService tokenService)
+    public JWTRequestFilter(TokenService tokenService, ObjectMapper objectMapper)
     {
         this.tokenService = tokenService;
+        this.objectMapper = objectMapper;
     }
-
-
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request)
     {

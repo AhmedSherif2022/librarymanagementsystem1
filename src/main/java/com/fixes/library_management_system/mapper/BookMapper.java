@@ -12,21 +12,19 @@ import org.mapstruct.ReportingPolicy;
 public interface BookMapper
 {
 
-    // Pull simple values out of the author and member objects.
-    // If a book has no member, memberId and memberName become null.
     @Mapping(source = "author.id", target = "authorId")
     @Mapping(source = "author.name", target = "authorName")
     @Mapping(source = "member.id", target = "memberId")
     @Mapping(source = "member.name", target = "memberName")
     BookDTO toDTO(Book book);
 
-    // The service must load the Author by request.getAuthorId() and call book.setAuthor(...)
+
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "author", ignore = true)
     @Mapping(target = "member", ignore = true)
     Book toEntity(SaveBookRequest request);
 
-    // Update: keeps the id and, importantly, the member who has the book
+
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "author", ignore = true)
     @Mapping(target = "member", ignore = true)

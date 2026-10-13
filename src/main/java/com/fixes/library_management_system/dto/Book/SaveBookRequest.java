@@ -4,8 +4,10 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.PastOrPresent;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.Size;
-import java.time.LocalDate;
+import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
+@NoArgsConstructor
 public class SaveBookRequest
 {
 
@@ -25,8 +27,7 @@ public class SaveBookRequest
     @Positive(message = "Author id must be a positive number")
     private Long authorId;
 
-    // Empty constructor: Jackson needs it to read JSON reliably
-    public SaveBookRequest() {}
+
 
     public SaveBookRequest(String title, Long authorId, LocalDate publishedDate, String isbn)
     {

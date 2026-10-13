@@ -1,5 +1,10 @@
 package com.fixes.library_management_system.dto.author;
+import lombok.Getter;
+import lombok.Setter;
+
 import java.util.List;
+@Setter
+@Getter
 public class ViewAuthorsResponse
 {
 

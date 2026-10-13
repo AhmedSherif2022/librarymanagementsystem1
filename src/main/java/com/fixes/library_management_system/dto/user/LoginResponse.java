@@ -1,6 +1,10 @@
 package com.fixes.library_management_system.dto.user;
 
+import lombok.Getter;
+import lombok.Setter;
 
+@Setter
+@Getter
 public class LoginResponse
 {
 
@@ -12,20 +16,5 @@ public class LoginResponse
         this.username = username;
         this.token = token;
     }
-    public String getUsername()
-    {
-        return username;
-    }
-    public void setUsername(String username)
-    {
-        this.username = username;
-    }
-    public String getToken()
-    {
-        return token;
-    }
-    public void setToken(String token)
-    {
-        this.token = token;
-    }
+
 }

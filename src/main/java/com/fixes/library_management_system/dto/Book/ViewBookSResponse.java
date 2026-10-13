@@ -1,5 +1,10 @@
 package com.fixes.library_management_system.dto.Book;
+import lombok.Getter;
+import lombok.Setter;
+
 import java.util.List;
+@Setter
+@Getter
 
 public class ViewBookSResponse
 {
@@ -9,14 +14,5 @@ public class ViewBookSResponse
     public ViewBookSResponse(List<BookDTO> books)
     {
         this.books = books == null ? List.of() : books;   // never send null
-    }
-
-    public List<BookDTO> getBooks()
-    {
-        return books;
-    }
-    public void setBooks(List<BookDTO> books)
-    {
-        this.books = books;
     }
 }

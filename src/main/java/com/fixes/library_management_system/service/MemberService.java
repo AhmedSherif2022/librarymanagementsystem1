@@ -2,14 +2,15 @@ package com.fixes.library_management_system.service;
 import com.fixes.library_management_system.dto.Memeber.MemberDTO;
 import com.fixes.library_management_system.dto.Memeber.SaveMemeberRequest;
 import com.fixes.library_management_system.dto.Memeber.ViewMemebersResponse;
+import com.fixes.library_management_system.exception.ConflictException;
 import com.fixes.library_management_system.exception.EntityAlreadyExistingException;
 import com.fixes.library_management_system.exception.EntityNotFoundException;
 import com.fixes.library_management_system.mapper.MemberMapper;
-import com.fixes.library_management_system.model.Member;
+import com.fixes.library_management_system.model.Memeber;
 import com.fixes.library_management_system.repository.BookRepository;
 import com.fixes.library_management_system.repository.MemberRepository;
-import com.fixes.library_management_system.Enums.EntityEnum;
-import com.fixes.library_management_system.Enums.OperationEnum;
+import com.fixes.library_management_system.enums.EntityEnum;
+import com.fixes.library_management_system.enums.OperationEnum;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
@@ -57,10 +58,10 @@ public class MemberService
         if (memberRepository.existsByEmailIgnoreCase(email)) {
             throw new EntityAlreadyExistingException("A member with this email already exists");
         }
-        Member member = memberMapper.toEntity(request);
-        member.setEmail(email);
+        Memeber memeber = memberMapper.toEntity(request);
+        memeber.setEmail(email);
 
-        Member saved = memberRepository.save(member);
+        Memeber saved = memberRepository.save(memeber);
         auditLogService.auditLog(EntityEnum.MEMBER, OperationEnum.CREATE, saved.getId());
         return memberMapper.toDTO(saved);
     }
@@ -68,16 +69,16 @@ public class MemberService
     @Transactional
     public MemberDTO updateMember(Long id, SaveMemeberRequest request)
     {
-        Member member = findMember(id);
+        Memeber memeber = findMember(id);
 
         String email = normalizeEmail(request.getEmail());
         if (memberRepository.existsByEmailIgnoreCaseAndIdNot(email, id)) {
             throw new EntityAlreadyExistingException("Another member already uses this email");
         }
-        memberMapper.updateEntity(request, member);   // keeps the id and the borrowed books
-        member.setEmail(email);
+        memberMapper.updateEntity(request, memeber);   // keeps the id and the borrowed books
+        memeber.setEmail(email);
 
-        Member saved = memberRepository.save(member);
+        Memeber saved = memberRepository.save(memeber);
         auditLogService.auditLog(EntityEnum.MEMBER, OperationEnum.UPDATE, saved.getId());
         return memberMapper.toDTO(saved);
     }
@@ -85,16 +86,16 @@ public class MemberService
     @Transactional
     public void deleteMember(Long id)
     {
-        Member member = findMember(id);
-        // The cascade was removed from Member, so borrowed books must be checked here (answer: 409)
+        Memeber memeber = findMember(id);
+
         if (bookRepository.existsByMemberId(id)) {
-            throw new EntityAlreadyExistingException("Member still has borrowed books and cannot be deleted");
+            throw new ConflictException("Member still has borrowed books and cannot be deleted");
         }
-        memberRepository.delete(member);
+        memberRepository.delete(memeber);
         auditLogService.auditLog(EntityEnum.MEMBER, OperationEnum.DELETE, id);
     }
 
-    private Member findMember(Long id)
+    private Memeber findMember(Long id)
     {
         return memberRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Member", id));

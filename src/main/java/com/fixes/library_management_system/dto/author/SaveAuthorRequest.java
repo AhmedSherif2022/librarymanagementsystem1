@@ -2,8 +2,10 @@ package com.fixes.library_management_system.dto.author;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Past;
 import jakarta.validation.constraints.Size;
-import java.time.LocalDate;
+import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
+@NoArgsConstructor
 public class SaveAuthorRequest {
 
     @NotBlank(message = "Name is mandatory")
@@ -17,8 +19,7 @@ public class SaveAuthorRequest {
     @Past(message = "Date of birth must be in the past")
     private LocalDate dob;
 
-    // Empty constructor: Jackson needs it to read JSON reliably
-    public SaveAuthorRequest() {}
+
 
     public SaveAuthorRequest(String name, String biography, LocalDate dob)
     {

@@ -1,5 +1,11 @@
 package com.fixes.library_management_system.dto.user;
+import lombok.Getter;
+import lombok.Setter;
+
 import java.util.List;
+@Setter
+@Getter
+
 
 public class ViewUsersResponse
 {
@@ -7,15 +13,8 @@ public class ViewUsersResponse
 
     public ViewUsersResponse(List<UserDTO> users)
     {
-        this.users = users == null ? List.of() : users;   // never send null
+        this.users = users == null ? List.of() : users;
     }
-    public List<UserDTO> getUsers()
-    {
-        return users;
-    }
-    public void setUsers(List<UserDTO> users)
-    {
-        this.users = users;
-    }
+
 }
 

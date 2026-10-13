@@ -4,12 +4,19 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Past;
 import jakarta.validation.constraints.Size;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
 @Entity
 @Table(name = "authors")
+@Setter
+@Getter
+@NoArgsConstructor
 public class Author
 {
 
@@ -35,11 +42,6 @@ public class Author
     @JsonIgnore
     private List<Book> books = new ArrayList<>();
 
-    public Author()
-    {
-
-
-    }
     public Author(String name, String biography, LocalDate dob)
     {
         this.name = name;

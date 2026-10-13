@@ -1,9 +1,15 @@
 package com.fixes.library_management_system.model;
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.time.LocalDateTime;
 
 @Entity
+@Setter
+@Getter
+@NoArgsConstructor
 @Table(
                 name = "audit_logs", indexes =
         {
@@ -33,11 +39,6 @@ public class AuditLog
     @Column(name = "user_id", nullable = false)
     private Long userId;
 
-    // Constructors
-    public AuditLog()
-    {
-        this.timestamp = LocalDateTime.now();
-    }
     public AuditLog(String entityType, Long entityId, String operation, Long userId)
     {
         this.entityType = entityType;
@@ -46,65 +47,4 @@ public class AuditLog
         this.timestamp = LocalDateTime.now();
         this.userId = userId;
     }
-
-    public Long getId()
-    {
-        return id;
-    }
-
-    public void setId(Long id)
-    {
-        this.id = id;
-    }
-
-    public String getEntityType()
-    {
-        return entityType;
-    }
-
-    public void setEntityType(String entityType)
-    {
-        this.entityType = entityType;
-    }
-
-    public Long getEntityId()
-    {
-        return entityId;
-    }
-
-    public void setEntityId(Long entityId)
-    {
-        this.entityId = entityId;
-    }
-
-    public String getOperation()
-    {
-        return operation;
-    }
-
-    public void setOperation(String operation)
-    {
-        this.operation = operation;
-    }
-
-    public LocalDateTime getTimestamp()
-    {
-        return timestamp;
-    }
-
-    public void setTimestamp(LocalDateTime timestamp)
-    {
-        this.timestamp = timestamp;
-    }
-
-    public Long getUserId()
-    {
-        return userId;
-    }
-
-    public void setUserId(Long userId)
-    {
-        this.userId = userId;
-    }
-
 }

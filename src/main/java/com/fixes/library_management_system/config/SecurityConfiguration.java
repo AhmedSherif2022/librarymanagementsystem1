@@ -24,13 +24,13 @@ import java.util.List;
 public class SecurityConfiguration
 {
 
-    // 1. The guard that reads the JWT token
+
     @Bean
     public JWTRequestFilter jwtFilter(TokenService tokenService, ObjectMapper objectMapper)
     {
-        return new JWTRequestFilter(tokenService);
+        return new JWTRequestFilter(tokenService, objectMapper);
     }
-    // 2. Stops Spring Boot from registering the same filter a second time
+
     @Bean
     public FilterRegistrationBean<JWTRequestFilter> jwtFilterRegistration(JWTRequestFilter filter)
     {
@@ -38,7 +38,7 @@ public class SecurityConfiguration
         registration.setEnabled(false);
         return registration;
     }
-    // 3. What to answer when nobody is logged in (401)
+
     @Bean
     public AuthEntryPoint authEntryPoint(ObjectMapper objectMapper)
     {

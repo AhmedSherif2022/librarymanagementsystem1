@@ -6,7 +6,7 @@ services:
       POSTGRES_USER: library
       POSTGRES_PASSWORD: library
     ports:
-      - "5433:5432"     # 5432 is already used by your other postgres container
+      - "5433:5432"
     volumes:
       - pgdata:/var/lib/postgresql/data
     healthcheck:
@@ -14,19 +14,6 @@ services:
       interval: 5s
       timeout: 5s
       retries: 10
-
-  app:
-    build: .
-    depends_on:
-      db:
-        condition: service_healthy
-    environment:
-      DB_URL: jdbc:postgresql://db:5432/library
-      DB_USER: library
-      DB_PASSWORD: library
-      JWT_SECRET: U4adqTE46lPutNDL7Zu/Rpar7NkvA6uCUKUP4pFMoVk=
-    ports:
-      - "8080:8080"
 
 volumes:
   pgdata:
