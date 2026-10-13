@@ -5,8 +5,10 @@ import com.fixes.library_management_system.dto.user.LoginRequest;
 import com.fixes.library_management_system.dto.user.LoginResponse;
 import com.fixes.library_management_system.dto.user.RegisterResponse;
 import com.fixes.library_management_system.dto.user.SaveUserRequest;
+import com.fixes.library_management_system.dto.user.UpdateRolesRequest;
 import com.fixes.library_management_system.dto.user.UserDTO;
 import com.fixes.library_management_system.dto.user.ViewUsersResponse;
+import com.fixes.library_management_system.exception.ConflictException;
 import com.fixes.library_management_system.exception.EntityAlreadyExistingException;
 import com.fixes.library_management_system.exception.EntityNotFoundException;
 import com.fixes.library_management_system.exception.InvalidPasswordException;
@@ -177,7 +179,40 @@ public class UserService {
         return userMapper.toDTO(saved);
     }
 
+    // Replaces a user's roles, e.g. to make them an admin or take admin away.
+    // The change shows up in their token the next time they log in.
+    @Transactional
+    public UserDTO updateUserRoles(Long id, UpdateRolesRequest request)
+    {
+        User actor = currentUser();
+        User user = findUser(id);
+
+        boolean wasAdmin = hasRole(user, RoleEnum.ROLE_ADMIN);
+        boolean staysAdmin = request.getRoles().contains(RoleEnum.ROLE_ADMIN);
+        if (wasAdmin && !staysAdmin) {
+            if (user.getId().equals(actor.getId())) {
+                throw new ConflictException("You cannot remove your own admin role");
+            }
+            if (userRepository.countByRoles_Name(RoleEnum.ROLE_ADMIN) <= 1) {
+                throw new ConflictException("The last admin cannot lose the admin role");
+            }
+        }
+
+        Set<Role> roles = request.getRoles().stream()
+                .map(this::findRole)
+                .collect(Collectors.toCollection(HashSet::new));
+        user.setRoles(roles);
+        User saved = userRepository.save(user);
+        auditLogService.auditLog(EntityEnum.USER, OperationEnum.UPDATE, saved.getId(), actor.getId());
+        log.info("User {} changed the roles of {} to {}", actor.getUsername(), saved.getUsername(), request.getRoles());
+        return userMapper.toDTO(saved);
+    }
+
     // ---------------------------------------------------------------- helpers
+
+    private boolean hasRole(User user, RoleEnum name) {
+        return user.getRoles().stream().anyMatch(r -> r.getName() == name);
+    }
 
     private User currentUser() {
         String username = tokenService.getUsernameFromToken();

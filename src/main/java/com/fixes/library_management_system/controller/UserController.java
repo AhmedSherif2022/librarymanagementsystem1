@@ -5,6 +5,7 @@ import com.fixes.library_management_system.dto.user.LoginRequest;
 import com.fixes.library_management_system.dto.user.LoginResponse;
 import com.fixes.library_management_system.dto.user.RegisterResponse;
 import com.fixes.library_management_system.dto.user.SaveUserRequest;
+import com.fixes.library_management_system.dto.user.UpdateRolesRequest;
 import com.fixes.library_management_system.dto.user.UserDTO;
 import com.fixes.library_management_system.dto.user.ViewUsersResponse;
 import com.fixes.library_management_system.service.UserService;
@@ -96,6 +97,15 @@ public class UserController
     public void deleteUserDetails(@PathVariable Long id)
     {
         userService.deleteUserDetails(id);
+    }
+
+    // Make a user an admin, or take admin away
+    @PutMapping("/{id}/roles")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<UserDTO> updateUserRoles(@PathVariable Long id,
+                                                   @Valid @RequestBody UpdateRolesRequest request)
+    {
+        return ResponseEntity.ok(userService.updateUserRoles(id, request));
     }
 
     @PostMapping

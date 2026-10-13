@@ -775,7 +775,7 @@
   }
 
   function listView(view) {
-    const sub = view === 'users' ? 'Accounts that can log in. Accounts you add here can be given the admin role.' : readOnlyNote(view);
+    const sub = view === 'users' ? 'Accounts that can log in. Use "Make admin" to give someone full access.' : readOnlyNote(view);
     return [head(VIEWS[view].label, sub, addButton(view)), ...toolbar(view), h('div', { id: 'list' })];
   }
 
@@ -922,6 +922,8 @@
         h('div', { class: 'meta' }, h('span', null, hl(u.email, q)))),
       h('div', { class: 'side-col' },
         (u.roles || []).slice().sort().map(r => h('span', { class: r === 'ROLE_ADMIN' ? 'tag tag-out' : 'tag tag-plain' }, r === 'ROLE_ADMIN' ? 'Admin' : 'Reader')),
+        !me && h('button', { class: 'btn btn-small', type: 'button', onclick: () => confirmRoleChange(u) },
+          isAdminUser(u) ? 'Remove admin' : 'Make admin'),
         h('button', { class: 'btn-link', type: 'button', onclick: () => me ? go('account') : openUserForm(u) }, me ? 'Your account' : 'Edit'),
         !me && h('button', { class: 'btn-link danger', type: 'button', onclick: () => confirmDelete('users', u) }, 'Delete')));
   }
@@ -1233,13 +1235,39 @@
       editing
         ? h('div', { class: 'field' }, h('span', { class: 'label' }, 'Roles'),
             h('div', null, (u.roles || []).map(r => h('span', { class: r === 'ROLE_ADMIN' ? 'tag tag-out' : 'tag tag-plain' }, r === 'ROLE_ADMIN' ? 'Admin' : 'Reader'), ' ')),
-            h('span', { class: 'hint' }, 'Roles are set when an account is created and cannot be changed here.'))
+            h('span', { class: 'hint' }, 'Use "Make admin" or "Remove admin" on the Users list to change roles.'))
         : h('fieldset', { class: 'field fieldset' }, h('legend', { class: 'label' }, 'Roles'),
             h('label', { class: 'check' }, h('input', { type: 'checkbox', name: 'ROLE_USER', id: 'ROLE_USER', checked: true }), 'Reader: can browse the catalog'),
             h('label', { class: 'check' }, h('input', { type: 'checkbox', name: 'ROLE_ADMIN', id: 'ROLE_ADMIN' }), 'Admin: can lend, add, edit and delete')),
       h('div', { class: 'dialog-actions' }, cancelBtn(() => dlg), submit)));
     dlg = openDialog([h('h2', null, editing ? `Edit ${u.username}` : 'Add user'), form]);
     form.elements.username.focus();
+  }
+
+  // Promote a user to admin, or take admin away. They see the change after their next login.
+  function confirmRoleChange(u) {
+    const promote = !isAdminUser(u);
+    const roles = promote ? ['ROLE_USER', 'ROLE_ADMIN'] : ['ROLE_USER'];
+    let dlg;
+    const save = h('button', { class: promote ? 'btn btn-primary' : 'btn btn-danger', type: 'button', onclick: async () => {
+      busy(save, true, 'Saving...');
+      try {
+        await api(`/users/${u.id}/roles`, { method: 'PUT', body: { roles } });
+        dlg.close();
+        toast(promote ? `${u.username} is now an admin` : `${u.username} is no longer an admin`);
+        await loadAll();
+      } catch (err) { dlg.close(); toast(err.message, true); }
+    } }, promote ? 'Make admin' : 'Remove admin');
+    const keep = h('button', { class: 'btn', type: 'button', onclick: () => dlg.close() }, 'Cancel');
+    dlg = openDialog([
+      h('h2', null, promote ? `Make ${u.username} an admin?` : `Remove admin from ${u.username}?`),
+      h('p', null, promote
+        ? 'Admins can lend books, add, edit and delete anything, and manage other accounts.'
+        : 'They will only be able to browse the catalog.'),
+      h('p', { class: 'hint' }, 'The change applies the next time they log in.'),
+      h('div', { class: 'dialog-actions' }, keep, save),
+    ]);
+    keep.focus();
   }
 
   function deleteBlocker(kind, item) {
